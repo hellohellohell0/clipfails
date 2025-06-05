@@ -295,6 +295,7 @@
         // {title: "Clip Title", creator: "Creator Name", videoPath: "path/to/video.mp4", link: "https://twitch.tv/clip-url"}
         
         const clips = [
+            {title: "jos running", creator: "kennyhoopz", videoPath: "video15.mp4", link: "https://kick.com/kennyhoopz/clips/clip_01JV1M3MFGHEBZ1FD0QPATPV7R"},
             {title: "jfk in dress to impress", creator: "ClipMaster", videoPath: "video14.mp4", link: "https://www.twitch.tv/nothinbutlag/clip/AmericanSassyShinglePartyTime-WKNIsiUxOF_R2z8a"},
             {title: "Valid crashout?", creator: "KaneAtwoodOfficial", videoPath: "video13.mp4", link: "https://www.twitch.tv/kaneatwoodofficial/clip/FurtiveFlaccidTitanMingLee-aQ1wqrayNTBe_Sqp"},
             {title: "WTF IS THAT", creator: "PrinceTerra_", videoPath: "video12.mp4", link: "https://www.twitch.tv/princeterra_/clip/AverageFrigidLasagnaAllenHuhu-DTkbdoVKL3gYUqxw"},
@@ -349,22 +350,4 @@
                 
                 // Show corresponding section
                 const sectionId = link.dataset.section;
-                document.getElementById(sectionId).classList.add('active');
-            });
-        });
-
-        // Populate clips on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Featured clip
-            document.getElementById('featured-clip').innerHTML = createClipHTML(featuredClip, true);
-            
-            // Home page clips (excluding featured)
-            const homeClips = clips.slice(1);
-            document.getElementById('home-clips').innerHTML = homeClips.map(clip => createClipHTML(clip)).join('');
-            
-            // All clips page
-            document.getElementById('all-clips').innerHTML = clips.map(clip => createClipHTML(clip)).join('');
-        });
-    </script>
-</body>
-</html>
+                document.ge
