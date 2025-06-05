@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>CLIP FAILS - clipfails.com</title>
 
+    <meta property="og:title" content="ClipFails - The Funniest Clips of All Time" />
+    <meta property="og:description" content="Watch hilarious clips from creators of all sizes 😂" />
+    <meta property="og:image" content="https://i.imgur.com/QRUakLz.jpeg" />
+    <meta property="og:url" content="https://clipfails.com"/>
+
     <script>
         (async () => {
             try {
@@ -350,4 +355,22 @@
                 
                 // Show corresponding section
                 const sectionId = link.dataset.section;
-                document.ge
+                document.getElementById(sectionId).classList.add('active');
+            });
+        });
+
+        // Populate clips on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Featured clip
+            document.getElementById('featured-clip').innerHTML = createClipHTML(featuredClip, true);
+            
+            // Home page clips (excluding featured)
+            const homeClips = clips.slice(1);
+            document.getElementById('home-clips').innerHTML = homeClips.map(clip => createClipHTML(clip)).join('');
+            
+            // All clips page
+            document.getElementById('all-clips').innerHTML = clips.map(clip => createClipHTML(clip)).join('');
+        });
+    </script>
+</body>
+</html>
