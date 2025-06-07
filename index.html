@@ -624,4 +624,160 @@
 
     /* Connection status indicator */
     .offline-indicator {
-  
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        background: #f44336;
+        color: white;
+        text-align: center;
+        padding: 0.5rem;
+        z-index: 1000;
+        transform: translateY(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .offline-indicator.show {
+        transform: translateY(0);
+    }
+
+    /* Performance improvements for older devices */
+    @supports not (backdrop-filter: blur(4px)) {
+        .video-modal {
+            background: rgba(0,0,0,0.9);
+        }
+        
+        .header {
+            background: rgba(0, 0, 0, 0.95);
+        }
+    }
+
+    @media (max-width: 768px) {
+        .header {
+            padding: 1rem;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .nav-menu {
+            gap: 1rem;
+        }
+
+        .nav-item {
+            padding: 0.4rem 0.8rem;
+            font-size: 0.9rem;
+        }
+
+        .featured-section {
+            padding: 1rem;
+        }
+
+        .featured-video {
+            height: 250px;
+        }
+
+        .featured-title {
+            font-size: 1.5rem;
+        }
+
+        .featured-info {
+            padding: 2rem 1rem 1rem;
+        }
+
+        .recommended-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .video-modal-content {
+            padding: 1rem;
+        }
+
+        .modal-iframe {
+            width: 95vw;
+            height: 53.4vw; /* 16:9 aspect ratio for mobile */
+            max-height: 70vh;
+        }
+
+        .modal-video {
+            max-width: 95vw;
+            max-height: 70vh;
+        }
+
+        .video-close {
+            top: 10px;
+            right: 15px;
+            font-size: 30px;
+            width: 50px;
+            height: 50px;
+        }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-left">
+      <h1>🎮 ClipFails</h1>
+      <p>Find Your Streaming Moment</p>
+    </div>
+    <nav class="nav-menu">
+      <a href="#" class="nav-item active" onclick="showSection('home')">Home</a>
+      <a href="#" class="nav-item" onclick="showSection('all-clips')">All Clips</a>
+      <a href="#" class="nav-item" onclick="showSection('about')">About</a>
+    </nav>
+  </header>
+
+  <section class="featured-section" id="home-section">
+    <div class="featured-container">
+      <div class="featured-video" id="featuredVideo" onclick="showVideoInModal(window.featuredClip?.url, window.featuredClip?.platform)">
+        <video class="featured-thumbnail" muted loop playsinline id="featuredVideoElement" style="display: none;">
+          <source src="" type="video/mp4" id="featuredSrc">
+          Your browser does not support the video tag.
+        </video>
+        <iframe class="featured-iframe" id="featuredIframe" style="display: none;" frameborder="0" allowfullscreen scrolling="no"></iframe>
+        <div class="featured-info">
+          <span class="featured-badge">🔥 Featured</span>
+          <h2 class="featured-title" id="featuredTitle">Loading clips... (if this is taking a while, reload your page)</h2>
+          <div class="featured-meta" id="featuredMeta">
+            <span>Now</span>
+            <span class="platform-badge other">OTHER</span>
+            <span>👀 0 views</span>
+            <span>❤️ 0 likes</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="recommended-section" id="home-recommended">
+    <h2 class="section-title">🌟 Recommended for You</h2>
+    <div class="recommended-grid" id="recommendedGrid"></div>
+  </section>
+
+  <section class="all-clips-section hidden" id="all-clips-section">
+    <h2 class="section-title">📺 All Clips</h2>
+    <div class="recommended-grid" id="allClipsGrid"></div>
+  </section>
+
+  <section class="about-section hidden" id="about-section">
+    <div class="about-content">
+      <h2>About ClipFails 🎮</h2>
+      <p>
+        Welcome to ClipFails, your ultimate destination for discovering amazing gaming clips and streaming moments! 
+        We curate the best fails, wins, and epic moments from your favorite streamers and content creators.
+      </p>
+      <p>
+        Whether you're looking for hilarious gaming fails, incredible clutch plays, or just want to relive 
+        some of the most memorable streaming moments, ClipFails has got you covered. Our platform supports 
+        clips from various sources including Twitch, YouTube, and local video files.
+      </p>
+    </div>
+  </section>
+
+  <div id="videoModal" class="video-modal">
+    <!-- Content will be dynamically inserted here -->
+  </div>
+</body>
+
+<script src="script.js"></script>
+
+</html>
