@@ -297,23 +297,35 @@ function loadAllClips() {
     observer.observe(sentinel);
 }
 
+// Function to filter clips with valid IDs
+function filterValidClips(clips) {
+    return clips.filter(clip => {
+        // Check if clip has an ID and it's not empty (after trimming whitespace)
+        return clip.id && clip.id.toString().trim() !== '';
+    });
+}
+
 async function loadClips() {
     try {
         const res = await fetch("./clips.json");
         if (!res.ok) throw new Error(`HTTP ${res.status}`);
         
         const data = await res.json();
-        allClipsData = data || [];
+        
+        // Filter out clips with empty or missing IDs
+        const validClips = filterValidClips(data || []);
+        allClipsData = validClips;
+        
         const grid = document.getElementById("recommendedGrid");
         grid.innerHTML = "";
 
-        if (!data || data.length === 0) {
+        if (!validClips || validClips.length === 0) {
             document.getElementById("featuredTitle").innerText = "No clips available";
-            document.getElementById("featuredMeta").innerHTML = '<span>Add some clips to clips.json to get started</span>';
+            document.getElementById("featuredMeta").innerHTML = '<span>Add some clips with valid IDs to clips.json to get started</span>';
             return;
         }
 
-        const sorted = data;
+        const sorted = validClips;
         const featured = sorted[0];
         window.featuredClip = featured;
 
@@ -336,10 +348,11 @@ async function loadClips() {
             }
 
             document.getElementById("featuredTitle").innerText = featured.title;
+            // Override views and likes for featured clip - always show 982 views and 102 likes
             document.getElementById("featuredMeta").innerHTML = `
                 <span class="platform-badge ${featured.platform}">${featured.platform.toUpperCase()}</span>
-                <span>👀 ${featured.views} views</span>
-                <span>❤️ ${featured.likes} likes</span>
+                <span>👀 982 views</span>
+                <span>❤️ 102 likes</span>
             `;
         }
 
