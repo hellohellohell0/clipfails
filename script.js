@@ -275,4 +275,129 @@ function loadAllClips() {
     grid.innerHTML = "";
 
     if (allClipsData.length === 0) {
-        grid.innerHTML = '<p style="text-align: center; color: #aaa;">No clips availa
+        grid.innerHTML = '<p style="text-align: center; color: #aaa;">No clips available</p>';
+        return;
+    }
+
+    currentClipIndex = 0;
+    setupLazyLoading();
+    loadNextClipBatch();
+
+    const sentinel = document.createElement("div");
+    sentinel.id = "scrollSentinel";
+    sentinel.style.height = "20px";
+    grid.appendChild(sentinel);
+
+    observer = new IntersectionObserver(entries => {
+        if (entries[0].isIntersecting && currentClipIndex < allClipsData.length) {
+            loadNextClipBatch();
+        }
+    }, { rootMargin: '200px' });
+
+    observer.observe(sentinel);
+}
+
+async function loadClips() {
+    try {
+        const res = await fetch("./clips.json");
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        
+        const data = await res.json();
+        allClipsData = data || [];
+        const grid = document.getElementById("recommendedGrid");
+        grid.innerHTML = "";
+
+        if (!data || data.length === 0) {
+            document.getElementById("featuredTitle").innerText = "No clips available";
+            document.getElementById("featuredMeta").innerHTML = '<span>Add some clips to clips.json to get started</span>';
+            return;
+        }
+
+        const sorted = data;
+        const featured = sorted[0];
+        window.featuredClip = featured;
+
+        if (featured) {
+            const featuredVideo = document.getElementById('featuredVideoElement');
+            const featuredIframe = document.getElementById('featuredIframe');
+
+            if (featured.platform === 'twitch') {
+                const clipId = featured.url.split("/").pop();
+                featuredIframe.src = `https://clips.twitch.tv/embed?clip=${clipId}&parent=${window.location.hostname}`;
+                featuredIframe.style.display = 'block';
+                featuredVideo.style.display = 'none';
+            } else {
+                // Only preload metadata on desktop
+                featuredVideo.preload = isMobile ? 'none' : 'metadata';
+                document.getElementById("featuredSrc").src = featured.url;
+                featuredVideo.load();
+                featuredVideo.style.display = 'block';
+                featuredIframe.style.display = 'none';
+            }
+
+            document.getElementById("featuredTitle").innerText = featured.title;
+            document.getElementById("featuredMeta").innerHTML = `
+                <span class="platform-badge ${featured.platform}">${featured.platform.toUpperCase()}</span>
+                <span>👀 ${featured.views} views</span>
+                <span>❤️ ${featured.likes} likes</span>
+            `;
+        }
+
+        // Setup lazy loading
+        setupLazyLoading();
+
+        // Load recommended clips with lazy loading
+        const recommended = sorted.slice(1, isMobile ? 6 : 12); // Fewer on mobile initially
+        for (const clip of recommended) {
+            const temp = document.createElement("div");
+            temp.innerHTML = generateClipCard(clip);
+            const clipCard = temp.firstElementChild;
+            
+            // Setup lazy loading for this clip
+            const lazyElements = clipCard.querySelectorAll('.lazy-video, .lazy-iframe');
+            lazyElements.forEach(element => {
+                videoIntersectionObserver.observe(element);
+            });
+            
+            grid.appendChild(clipCard);
+        }
+    } catch (error) {
+        console.error('Error loading clips:', error);
+        document.getElementById("featuredTitle").innerText = "Error loading clips";
+        document.getElementById("featuredMeta").innerHTML = '<span>Please check your internet connection and try reloading.</span>';
+    }
+}
+
+// Optimize for mobile performance
+if (isMobile) {
+    // Reduce quality on mobile
+    document.addEventListener('DOMContentLoaded', () => {
+        const style = document.createElement('style');
+        style.textContent = `
+            .clip-thumbnail, .featured-thumbnail { 
+                filter: contrast(0.9) brightness(0.95);
+            }
+        `;
+        document.head.appendChild(style);
+    });
+}
+
+// Load clips when page loads
+window.onload = async () => {
+    await loadClips();
+};
+
+// Handle connection changes
+window.addEventListener('online', () => {
+    console.log('Connection restored');
+});
+
+window.addEventListener('offline', () => {
+    console.log('Connection lost');
+});
+
+// Cleanup on page unload
+window.addEventListener('beforeunload', () => {
+    if (observer) observer.disconnect();
+    if (videoIntersectionObserver) videoIntersectionObserver.disconnect();
+});
