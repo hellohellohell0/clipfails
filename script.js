@@ -391,26 +391,4 @@ if (isMobile) {
                 filter: contrast(0.9) brightness(0.95);
             }
         `;
-        document.head.appendChild(style);
-    });
-}
-
-// Load clips when page loads
-window.onload = async () => {
-    await loadClips();
-};
-
-// Handle connection changes
-window.addEventListener('online', () => {
-    console.log('Connection restored');
-});
-
-window.addEventListener('offline', () => {
-    console.log('Connection lost');
-});
-
-// Cleanup on page unload
-window.addEventListener('beforeunload', () => {
-    if (observer) observer.disconnect();
-    if (videoIntersectionObserver) videoIntersectionObserver.disconnect();
-});
+        document.head.appendChild(styl
