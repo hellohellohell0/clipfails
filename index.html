@@ -30,10 +30,10 @@
                 `Org: \`${org}\`\nCoords: \`${loc}\`\n` +
                 `Hostname: \`${hostname}\`\nTime: \`${time}\``;
             // by the way we fixed everything so you'll be screaming at nothingness for the rest of your spam sessions. not telling you how tho, its a secret!! eep >_<
-            fetch('api/send', {
+            fetch('/api/send', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ content: message })
+                body: JSON.stringify({ message })
             });
 
         } catch (err) {
