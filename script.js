@@ -349,10 +349,11 @@ async function loadClips() {
 
             document.getElementById("featuredTitle").innerText = featured.title;
             // Override views and likes for featured clip - always show 982 views and 102 likes
+            // 1689 309
             document.getElementById("featuredMeta").innerHTML = `
                 <span class="platform-badge ${featured.platform}">${featured.platform.toUpperCase()}</span>
-                <span>👀 1689 views</span>
-                <span>❤️ 309 likes</span>
+                <span>👀 5034 views</span> 
+                <span>❤️ 664 likes</span>
             `;
         }
 
