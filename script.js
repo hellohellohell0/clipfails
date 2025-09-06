@@ -352,8 +352,8 @@ async function loadClips() {
             // 1689 309
             document.getElementById("featuredMeta").innerHTML = `
                 <span class="platform-badge ${featured.platform}">${featured.platform.toUpperCase()}</span>
-                <span>👀 982 views</span> 
-                <span>❤️ 102 likes</span>
+                <span>👀 1689 views</span> 
+                <span>❤️ 309 likes</span>
             `;
         }
 
