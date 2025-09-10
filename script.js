@@ -326,7 +326,27 @@ async function loadClips() {
         }
 
         const sorted = validClips;
-        const featured = sorted[0];
+
+        // fetch featured clip from API instead of JSON first element
+        let featured = null;
+        try {
+            const featRes = await fetch("/api/getfeaturedclip");
+            if (featRes.ok) {
+                const url = await featRes.text();
+                featured = {
+                    url: url.trim(),
+                    title: "Featured Clip",
+                    platform: url.includes("twitch.tv") ? "twitch" : "other"
+                };
+            }
+        } catch (err) {
+            console.warn("Failed to fetch featured clip, falling back to first JSON clip");
+        }
+
+        // fallback if API didn’t work
+        if (!featured || !featured.url) {
+            featured = sorted[0];
+        }
         window.featuredClip = featured;
 
         if (featured) {
