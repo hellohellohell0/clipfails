@@ -332,11 +332,11 @@ async function loadClips() {
         try {
             const featRes = await fetch("/api/getfeaturedclip");
             if (featRes.ok) {
-                const url = await featRes.text();
+                const data = await featRes.json(); // parse JSON
                 featured = {
-                    url: url.trim(),
-                    title: "Featured Clip",
-                    platform: url.includes("twitch.tv") ? "twitch" : "other"
+                    url: data.url.trim(),
+                    title: data.title || "Featured Clip",
+                    platform: data.url.includes("twitch.tv") ? "twitch" : "other"
                 };
             }
         } catch (err) {
