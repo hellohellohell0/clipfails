@@ -9,7 +9,7 @@ export default async function handler(req, res) {
 
     try {
         // Fetch from your Replit endpoint
-        const response = await fetch("https://4b646c79-7d89-477b-af11-791e5a27cd07-00-1pxopkbkgfwrk.worf.replit.dev?type=getfeaturedclip");
+        const response = await fetch("https://68085673-13e8-4de1-83e1-6853336c14df-00-2pszcu51sso9d.kirk.replit.dev?type=getfeaturedclip");
         if (!response.ok) throw new Error("Bad response");
 
         const text = await response.text();
